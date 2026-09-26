@@ -1,6 +1,6 @@
 export type TUser = {
   id: string;
-  role: "admin" | "student" | "faculty";
+  role: "doctor" | "patient";
   status: "in-progress" | "blocked";
   password: string;
   needsPasswordChange: boolean;
@@ -9,6 +9,6 @@ export type TUser = {
 
 export type NewUser = {
   id: string;
-  role: string;
+  role: "doctor" | "patient";
   password: string;
 };

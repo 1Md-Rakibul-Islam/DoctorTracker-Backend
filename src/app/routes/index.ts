@@ -1,32 +1,32 @@
-import { Router } from "express";
-import { UserRoutes } from "../modules/user/user.route";
-import { StudentRoutes } from "../modules/student/student.route";
-import { AcademicSemesterRoutes } from "../modules/academicSemester/academicSemester.route";
-import { AcademicFacultyRoutes } from "../modules/academicFaculty/academicFaculty.route";
-import { AcademicDepartmentRoutes } from "../modules/academicDepartment/academicDepartment.route";
+import { Router } from 'express';
+import { UserRoutes } from '../modules/user/user.route';
+import { DoctorRoutes } from '../modules/doctor/doctor.route';
+import { PatientRoutes } from '../modules/patient/patient.route';
+import { DashboardRoutes } from '../modules/dashboard/dashboard.route';
+import { AuthRoutes } from '../modules/auth/auth.route';
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path: "/users",
+    path: '/users',
     route: UserRoutes,
   },
   {
-    path: "/students",
-    route: StudentRoutes,
+    path: '/doctors',
+    route: DoctorRoutes,
   },
   {
-    path: "/academic-semesters",
-    route: AcademicSemesterRoutes,
+    path: '/patients',
+    route: PatientRoutes,
   },
   {
-    path: "/academic-faculties",
-    route: AcademicFacultyRoutes,
+    path: '/dashboard',
+    route: DashboardRoutes,
   },
   {
-    path: '/academic-departments',
-    route: AcademicDepartmentRoutes,
+    path: '/auth',
+    route: AuthRoutes,
   },
 ];
 

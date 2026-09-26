@@ -1,61 +1,28 @@
-import { model, Schema } from "mongoose";
-import { TUser } from "./user.interface";
-import config from "../../config";
-import bcrypt from "bcrypt";
+import { Schema, model } from 'mongoose';
+import { IUser, UserModel } from './user.interface';
+import config from '../../config';
+import bcrypt from 'bcrypt';
 
-const userSchema = new Schema(
+const userSchema = new Schema<IUser, UserModel>(
   {
-    id: {
-      type: String,
-      required: true,
-    },
-    role: {
-      type: String,
-      enum: ["admin", "student", "faculty"],
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ["in-progress", "blocked"],
-      default: "in-progress",
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    needsPasswordChange: {
-      type: Boolean,
-      default: true,
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, select: false },
+    role: { type: String, enum: ['admin', 'doctor', 'patient'], default: 'admin' },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-// pre save middleware / hook
-userSchema.pre("save", async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
+userSchema.pre('save', async function (next) {
   const user = this;
-
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-
+  if (user.isModified('password') && user.password) {
+    user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds) || 12);
+  }
   next();
 });
 
-// set "" password after saving user. post save middleware / hook
-userSchema.post("save", function (doc, next) {
-  doc.password = "";
-  next();
-});
-
-const User = model<TUser>("User", userSchema);
+const User = model<IUser, UserModel>('User', userSchema);
 
 export default User;

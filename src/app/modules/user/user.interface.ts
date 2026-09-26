@@ -1,14 +1,10 @@
-export type TUser = {
-  id: string;
-  role: "doctor" | "patient";
-  status: "in-progress" | "blocked";
-  password: string;
-  needsPasswordChange: boolean;
-  isDeleted: boolean;
-};
+import { Model } from 'mongoose';
 
-export type NewUser = {
-  id: string;
-  role: "doctor" | "patient";
-  password: string;
-};
+export interface IUser {
+  name: string;
+  email: string;
+  password?: string;
+  role: 'admin' | 'doctor' | 'patient';
+}
+
+export type UserModel = Model<IUser>;

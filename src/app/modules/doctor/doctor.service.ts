@@ -19,11 +19,22 @@ const getAllDoctorsFromDB = async (query: Record<string, unknown>) => {
         .fields();
 
     const result = await doctorQuery.modelQuery;
+
+    const Patient = mongoose.model('Patient');
+    const enrichedResult = await Promise.all(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        result.map(async (doc: any) => {
+            const docObj = doc.toObject ? doc.toObject() : doc;
+            const patientCount = await Patient.countDocuments({ doctorId: docObj._id });
+            return { ...docObj, patientCount };
+        })
+    );
+
     const meta = await doctorQuery.countTotal();
 
     return {
         meta,
-        result,
+        result: enrichedResult,
     };
 };
 

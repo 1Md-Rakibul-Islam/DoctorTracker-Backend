@@ -34,13 +34,12 @@ app.use(
 app.use("/api/v1/", router);
 
 app.get("/", (req: Request, res: Response) => {
-  const a = {
-    name: "Doctor Tracker - server running",
-    version: "1.0.0",
-  };
   res.status(200).json({
     status: 200,
-    data: a,
+    data: {
+      name: "Doctor Tracker - server running",
+      version: "1.0.0",
+    },
     message: "success",
   });
 });

@@ -7,8 +7,9 @@ let server: Server;
 
 async function main() {
   try {
-    console.log("DATABASE_URL exists:", !!config.database_url);
+    console.log("=== SERVER START ===");
     console.log("NODE_ENV:", config.NODE_ENV);
+    console.log("DATABASE_URL exists:", !!config.database_url);
 
     await mongoose.connect(config.database_url as string);
 

@@ -7,13 +7,18 @@ let server: Server;
 
 async function main() {
   try {
+    console.log("DATABASE_URL exists:", !!config.database_url);
+    console.log("NODE_ENV:", config.NODE_ENV);
+
     await mongoose.connect(config.database_url as string);
 
+    console.log("MongoDB connected successfully");
+
     server = app.listen(config.port, () => {
-      console.log(`Example app listening on port ${config.port}`);
+      console.log(`Server running on port ${config.port}`);
     });
   } catch (error) {
-    console.log(error);
+    console.error("MongoDB connection failed:", error);
   }
 }
 

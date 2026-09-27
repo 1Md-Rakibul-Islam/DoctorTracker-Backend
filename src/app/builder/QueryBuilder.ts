@@ -32,10 +32,23 @@ class QueryBuilder<T> {
         const queryObj = { ...this.query };
 
         const excludeFields = ["searchTerm", "sort", "limit", "page", "fields"];
-
         excludeFields?.forEach((field) => delete queryObj[field]);
 
-        this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+        // Fix for serverless environments (like Vercel) that flatten req.query instead of parsing nested objects
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const formattedQueryObj: Record<string, any> = {};
+        for (const key in queryObj) {
+            const match = key.match(/^([^[]+)\[([^\]]+)\]$/);
+            if (match) {
+                const [, field, operator] = match;
+                if (!formattedQueryObj[field]) formattedQueryObj[field] = {};
+                formattedQueryObj[field][operator] = queryObj[key];
+            } else {
+                formattedQueryObj[key] = queryObj[key];
+            }
+        }
+
+        this.modelQuery = this.modelQuery.find(formattedQueryObj as FilterQuery<T>);
 
         return this;
     };

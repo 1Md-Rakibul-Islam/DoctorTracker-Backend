@@ -1,5 +1,6 @@
 import express, { ErrorRequestHandler, Request, Response } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import globalErrorhandler from "./app/middlwares/globalErrorhandler";
 import notFound from "./app/middlwares/notFound";
 import router from "./app/routes";
@@ -8,7 +9,8 @@ const app = express();
 
 // parsers
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // application routes
 app.use("/api/v1/", router);

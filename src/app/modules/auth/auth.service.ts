@@ -48,11 +48,50 @@ const loginUser = async (payload: TLoginUser) => {
     { expiresIn: config.jwt_access_expires_in as SignOptions['expiresIn'] }
   );
 
+  const refreshToken = jwt.sign(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    { expiresIn: config.jwt_refresh_expires_in as SignOptions['expiresIn'] }
+  );
+
   const userObj = user.toObject();
   delete userObj.password;
 
   return {
     user: userObj,
+    accessToken,
+    refreshToken,
+  };
+};
+
+const refreshToken = async (token: string) => {
+  let decoded;
+  try {
+    decoded = jwt.verify(token, config.jwt_refresh_secret as string) as jwt.JwtPayload;
+  } catch (err) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid refresh token!');
+  }
+
+  const { email } = decoded;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+  }
+
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = jwt.sign(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    { expiresIn: config.jwt_access_expires_in as SignOptions['expiresIn'] }
+  );
+
+  return {
     accessToken,
   };
 };
@@ -60,4 +99,5 @@ const loginUser = async (payload: TLoginUser) => {
 export const AuthServices = {
   registerUser,
   loginUser,
+  refreshToken,
 };

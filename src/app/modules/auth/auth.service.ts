@@ -68,7 +68,8 @@ const refreshToken = async (token: string) => {
   let decoded;
   try {
     decoded = jwt.verify(token, config.jwt_refresh_secret as string) as jwt.JwtPayload;
-  } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err: unknown) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid refresh token!');
   }
 

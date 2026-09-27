@@ -20,6 +20,7 @@ const auth = (...requiredRoles: string[]) => {
         token.replace('Bearer ', ''),
         config.jwt_access_secret as string
       ) as JwtPayload;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Unauthorized!');
     }

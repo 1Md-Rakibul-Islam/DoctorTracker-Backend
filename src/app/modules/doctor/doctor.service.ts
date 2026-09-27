@@ -104,7 +104,7 @@ const getDoctorPatientsFromDB = async (doctorId: string, query: Record<string, u
     };
 };
 
-const addPatientToDoctorInDB = async (doctorId: string, payload: any) => {
+const addPatientToDoctorInDB = async (doctorId: string, payload: Record<string, unknown>) => {
     const isDoctorExists = await Doctor.findById(doctorId);
     if (!isDoctorExists) {
         throw new AppError(httpStatus.NOT_FOUND, 'Doctor not found');

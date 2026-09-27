@@ -10,7 +10,7 @@ import handleCastError from "../errors/handleCastError";
 import handleDuplicateError from "../errors/handleDuplicateError";
 import AppError from "../errors/AppError";
 
-const globalErrorHandler: any = (err: any, req: any, res: any, next: any) => {
+const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   let statusCode = err.statusCode || 500;
   let message = err.message || "Something went wrong!";
@@ -73,7 +73,7 @@ const globalErrorHandler: any = (err: any, req: any, res: any, next: any) => {
 
   };
 
-  return res.status(statusCode).json({
+  res.status(statusCode).json({
     success: false,
     message,
     errorSourses,

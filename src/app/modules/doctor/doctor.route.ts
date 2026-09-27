@@ -13,28 +13,28 @@ router.post(
     DoctorControllers.createDoctor
 );
 
-router.get('/', auth('admin', 'doctor'), DoctorControllers.getAllDoctors);
+router.get('/', auth('admin'), DoctorControllers.getAllDoctors);
 
-router.get('/:id', auth('admin', 'doctor'), DoctorControllers.getSingleDoctor);
+router.get('/:id', auth('admin'), DoctorControllers.getSingleDoctor);
 
 router.patch(
     '/:id',
-    auth('admin', 'doctor'),
+    auth('admin'),
     validateRequest(DoctorValidations.updateDoctorValidationSchema),
     DoctorControllers.updateDoctor
 );
 
 router.delete('/:id', auth('admin'), DoctorControllers.deleteDoctor);
 
-router.get('/:id/patients', auth('admin', 'doctor'), DoctorControllers.getDoctorPatients);
+router.get('/:id/patients', auth('admin'), DoctorControllers.getDoctorPatients);
 
 router.post(
     '/:id/patients',
-    auth('admin', 'doctor'),
+    auth('admin'),
     validateRequest(DoctorValidations.addPatientValidationSchema),
     DoctorControllers.addPatientToDoctor
 );
 
-router.delete('/:id/patients/:patientId', auth('admin', 'doctor'), DoctorControllers.removePatientFromDoctor);
+router.delete('/:id/patients/:patientId', auth('admin'), DoctorControllers.removePatientFromDoctor);
 
 export const DoctorRoutes = router;

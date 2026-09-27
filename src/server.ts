@@ -11,7 +11,8 @@ async function main() {
     console.log("NODE_ENV:", config.NODE_ENV);
     console.log("DATABASE_URL exists:", !!config.database_url);
 
-    await mongoose.connect(config.database_url as string);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const connect = await mongoose.connect(config.database_url as string);
 
     console.log("MongoDB connected successfully");
 

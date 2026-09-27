@@ -2,28 +2,62 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import User from '../user/user.model';
 import bcrypt from 'bcrypt';
-// Depending on auth flow, we could generate JWT here. The frontend seems to just expect the user object directly.
-// Let's generate a basic token if needed, or just return user info.
+import jwt from 'jsonwebtoken';
+import type { SignOptions } from 'jsonwebtoken';
+import config from '../../config';
 
-const loginUser = async (payload: any) => {
+import { IUser } from '../user/user.interface';
+import { TLoginUser } from './auth.interface';
+
+const registerUser = async (payload: IUser) => {
+  // Check if user already exists
+  const existingUser = await User.findOne({ email: payload.email });
+  if (existingUser) {
+    throw new AppError(httpStatus.CONFLICT, 'User with this email already exists');
+  }
+
+  // Create new user
+  const newUser = await User.create(payload);
+  const userObj = newUser.toObject();
+  delete userObj.password;
+
+  return userObj;
+};
+
+const loginUser = async (payload: TLoginUser) => {
   const user = await User.findOne({ email: payload.email }).select('+password');
 
   if (!user || !user.password) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found or missing password');
   }
 
-  const isPasswordMatched = await bcrypt.compare(payload.password, user.password);
+  const isPasswordMatched = await bcrypt.compare(payload.password, user.password as string);
 
   if (!isPasswordMatched) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid password');
   }
 
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = jwt.sign(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    { expiresIn: config.jwt_access_expires_in as SignOptions['expiresIn'] }
+  );
+
   const userObj = user.toObject();
   delete userObj.password;
 
-  return userObj;
+  return {
+    user: userObj,
+    accessToken,
+  };
 };
 
 export const AuthServices = {
+  registerUser,
   loginUser,
 };

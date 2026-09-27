@@ -15,7 +15,7 @@ app.use("/api/v1/", router);
 
 app.get("/", (req: Request, res: Response) => {
   const a = {
-    name: "uttara university - server running",
+    name: "Doctor Tracker - server running",
     version: "1.0.0",
   };
   res.status(200).json({
